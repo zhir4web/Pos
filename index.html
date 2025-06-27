@@ -56,14 +56,14 @@
       <!-- خواردنی یەکەم -->
    <div class="w-full border p-4 rounded shadow text-center ">
         <img class="img mx-auto mb-2" src="fast.jpg" alt="">
-        <h2 class="font-bold mb-2">لەفەی فلاوفل</h2>
+        <h2 class="font-bold mb-2">لەفەی <span id="namefood">فلاوفل</span></h2>
         <div class="text-lg space-x-2">
-          ٥٠٠ دینار
+          <span class="dinar">٥٠٠</span> دینار
           <div>
-<button class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black">
+<button id="add" class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black">
             <i class="fas fa-plus ml-1"></i>
           </button>
-          <button class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black">
+          <button id="subtract" class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black">
             <i class="fas fa-minus"></i>
           </button>
           </div>
@@ -211,12 +211,12 @@
 <div class="md:w-100 h-full md:max-h-full mt-4 p-4 bg-white rounded shadow">
       <h2 class="text-lg font-bold mb-2">حساباتی خواردنەکان</h2>
       <div>
-        <h2 class="font-bold text-xl">بەرهەم: <span id="product"></span></h2 >
+        <h2  class="font-bold text-xl">بەرهەم: <span id="count"></span></h2 >
          <h2 class="font-bold text-xl">جۆری خواردن: <span id="jor"></span></h2 >
       </div>
       <div class="flex justify-between items-center md:mt-66  ">
-          <h3 class="text-xl font-semibold">  کۆی گشتی :<span id="calulate" class="text-xl font-semibold">١٥٠٠ دینار</span> </h3>
-        <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded ">
+          <h3 class="text-xl font-semibold">  کۆی گشتی :<span id="calculate" class="text-xl font-semibold text-black"></span> </h3>
+        <button  class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded ">
           فرۆشتن
         </button>
       </div>
