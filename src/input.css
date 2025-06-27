@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+
+
+body{
+    background-color: #393C49;
+}
+header {
+  background-color: #5b0505;
+  padding: 1rem 2rem;
+}
+.selection1{
+     background-color: #ffed94; /* زەردی خوارتری */
+  color: #000000;           /* سور توندتر بۆ خواندنی باشتر */
+}
+.img{
+    width: 100px;
+}
