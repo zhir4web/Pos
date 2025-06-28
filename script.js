@@ -62,10 +62,25 @@ addBtns.forEach((btn, idx) => {
 
 subBtns.forEach((btn, idx) => {
   btn.addEventListener('click', () => {
-    if (foodCounts[idx] > 0) foodCounts[idx]--;
-    updateCalculation();
+    if (foodCounts[idx] > 0) {
+      foodCounts[idx]--;
+      updateCalculation();
+    }
   });
 });
 
 // Initialize display
 updateCalculation();
+
+
+const Sell = document.querySelector('button.bg-blue-500, button.bg-blue-600');
+
+if (Sell) {
+  Sell.addEventListener('click', () => {
+    // Reset all food counts
+    foodCounts = Array(foods.length).fill(0);
+    updateCalculation();
+    // Optionally, show a message or animation for successful sale
+    // alert('فرۆشتن بەسەرکەوتوویی تەواو بوو!');
+  });
+}

@@ -73,28 +73,36 @@
       </div>
 
       <div class="container mx-auto">
-        <div class="w-full md:justify-between md:flex">
+        <div class="w-full md:justify-between md:flex md:gap-6">
           <div
-            class="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5"
+            class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-4 p-2"
           >
             <!-- خواردنی یەکەم -->
-            <div class="w-full border p-4 rounded shadow text-center">
-              <img class="img mx-auto mb-2" src="fast.jpg" alt="" />
-              <h2 class="font-bold mb-2">
+            <div
+              class="w-full bg-white rounded-lg shadow text-center food-card border border-gray-100 hover:shadow-lg hover:bg-yellow-50 transition-all duration-200 p-2 sm:p-4"
+            >
+              <img
+                class="mx-auto mb-2 rounded-md object-cover w-full h-16 sm:h-20 md:h-24"
+                src="fast.jpg"
+                alt=""
+              />
+              <h2 class="font-bold mb-2 text-base sm:text-lg">
                 لەفەی <span id="namefood">فلاوفل</span>
               </h2>
-              <div class="text-lg space-x-2">
-                <span class="dinar">٥٠٠</span> دینار
-                <div>
+              <div
+                class="text-base sm:text-lg flex flex-col items-center gap-1"
+              >
+                ٥٠٠ دینار
+                <div class="flex gap-2 justify-center">
                   <button
                     id="add"
-                    class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black"
+                    class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black border border-gray-200"
                   >
                     <i class="fas fa-plus ml-1"></i>
                   </button>
                   <button
                     id="subtract"
-                    class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black"
+                    class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black border border-gray-200"
                   >
                     <i class="fas fa-minus"></i>
                   </button>
@@ -103,19 +111,27 @@
             </div>
 
             <!-- خواردنی دووەم -->
-            <div class="w-full border p-4 rounded shadow text-center">
-              <img class="img mx-auto mb-2" src="fast.jpg" alt="" />
-              <h2 class="font-bold mb-2">لەفەی مریشک</h2>
-              <div class="text-lg space-x-2">
+            <div
+              class="w-full bg-white rounded-lg shadow text-center food-card border border-gray-100 hover:shadow-lg hover:bg-yellow-50 transition-all duration-200 p-2 sm:p-4"
+            >
+              <img
+                class="mx-auto mb-2 rounded-md object-cover w-full h-16 sm:h-20 md:h-24"
+                src="fast.jpg"
+                alt=""
+              />
+              <h2 class="font-bold mb-2 text-base sm:text-lg">لەفەی مریشک</h2>
+              <div
+                class="text-base sm:text-lg flex flex-col items-center gap-1"
+              >
                 ١٢٥٠ دینار
-                <div>
+                <div class="flex gap-2 justify-center">
                   <button
-                    class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black"
+                    class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black border border-gray-200"
                   >
                     <i class="fas fa-plus ml-1"></i>
                   </button>
                   <button
-                    class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black"
+                    class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black border border-gray-200"
                   >
                     <i class="fas fa-minus"></i>
                   </button>
@@ -124,19 +140,27 @@
             </div>
 
             <!-- خواردنی سێیەم -->
-            <div class="w-full border p-4 rounded shadow text-center">
-              <img class="img mx-auto mb-2" src="fast.jpg" alt="" />
-              <h2 class="font-bold mb-2">لەفەی کوبە</h2>
-              <div class="text-lg space-x-2">
+            <div
+              class="w-full bg-white rounded-lg shadow text-center food-card border border-gray-100 hover:shadow-lg hover:bg-yellow-50 transition-all duration-200 p-2 sm:p-4"
+            >
+              <img
+                class="mx-auto mb-2 rounded-md object-cover w-full h-16 sm:h-20 md:h-24"
+                src="fast.jpg"
+                alt=""
+              />
+              <h2 class="font-bold mb-2 text-base sm:text-lg">لەفەی کوبە</h2>
+              <div
+                class="text-base sm:text-lg flex flex-col items-center gap-1"
+              >
                 ١٠٠٠ دینار
-                <div>
+                <div class="flex gap-2 justify-center">
                   <button
-                    class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black"
+                    class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black border border-gray-200"
                   >
                     <i class="fas fa-plus ml-1"></i>
                   </button>
                   <button
-                    class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black"
+                    class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black border border-gray-200"
                   >
                     <i class="fas fa-minus"></i>
                   </button>
@@ -144,19 +168,27 @@
               </div>
             </div>
             <!-- خواردنی چوارەم -->
-            <div class="w-full border p-4 rounded shadow text-center">
-              <img class="img mx-auto mb-2" src="fast.jpg" alt="" />
-              <h2 class="font-bold mb-2">لەفەی جگێر</h2>
-              <div class="text-lg space-x-2">
+            <div
+              class="w-full bg-white rounded-lg shadow text-center food-card border border-gray-100 hover:shadow-lg hover:bg-yellow-50 transition-all duration-200 p-2 sm:p-4"
+            >
+              <img
+                class="mx-auto mb-2 rounded-md object-cover w-full h-16 sm:h-20 md:h-24"
+                src="fast.jpg"
+                alt=""
+              />
+              <h2 class="font-bold mb-2 text-base sm:text-lg">لەفەی جگێر</h2>
+              <div
+                class="text-base sm:text-lg flex flex-col items-center gap-1"
+              >
                 ١٢٥٠ دینار
-                <div>
+                <div class="flex gap-2 justify-center">
                   <button
-                    class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black"
+                    class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black border border-gray-200"
                   >
                     <i class="fas fa-plus ml-1"></i>
                   </button>
                   <button
-                    class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black"
+                    class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black border border-gray-200"
                   >
                     <i class="fas fa-minus"></i>
                   </button>
@@ -164,19 +196,29 @@
               </div>
             </div>
             <!-- خواردنی پێنجەم -->
-            <div class="w-full border p-4 rounded shadow text-center">
-              <img class="img mx-auto mb-2" src="fast.jpg" alt="" />
-              <h2 class="font-bold mb-2">لەفەی هەمبەرگر</h2>
-              <div class="text-lg space-x-2">
+            <div
+              class="w-full bg-white rounded-lg shadow text-center food-card border border-gray-100 hover:shadow-lg hover:bg-yellow-50 transition-all duration-200 p-2 sm:p-4"
+            >
+              <img
+                class="mx-auto mb-2 rounded-md object-cover w-full h-16 sm:h-20 md:h-24"
+                src="fast.jpg"
+                alt=""
+              />
+              <h2 class="font-bold mb-2 text-base sm:text-lg">
+                لەفەی هەمبەرگر
+              </h2>
+              <div
+                class="text-base sm:text-lg flex flex-col items-center gap-1"
+              >
                 ١٢٥٠ دینار
-                <div>
+                <div class="flex gap-2 justify-center">
                   <button
-                    class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black"
+                    class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black border border-gray-200"
                   >
                     <i class="fas fa-plus ml-1"></i>
                   </button>
                   <button
-                    class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black"
+                    class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black border border-gray-200"
                   >
                     <i class="fas fa-minus"></i>
                   </button>
@@ -184,19 +226,27 @@
               </div>
             </div>
             <!-- خواردنی شەشەم -->
-            <div class="w-full border p-4 rounded shadow text-center">
-              <img class="img mx-auto mb-2" src="fast.jpg" alt="" />
-              <h2 class="font-bold mb-2">لەفەی شفتە</h2>
-              <div class="text-lg space-x-2">
+            <div
+              class="w-full bg-white rounded-lg shadow text-center food-card border border-gray-100 hover:shadow-lg hover:bg-yellow-50 transition-all duration-200 p-2 sm:p-4"
+            >
+              <img
+                class="mx-auto mb-2 rounded-md object-cover w-full h-16 sm:h-20 md:h-24"
+                src="fast.jpg"
+                alt=""
+              />
+              <h2 class="font-bold mb-2 text-base sm:text-lg">لەفەی شفتە</h2>
+              <div
+                class="text-base sm:text-lg flex flex-col items-center gap-1"
+              >
                 ١٥٠٠ دینار
-                <div>
+                <div class="flex gap-2 justify-center">
                   <button
-                    class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black"
+                    class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black border border-gray-200"
                   >
                     <i class="fas fa-plus ml-1"></i>
                   </button>
                   <button
-                    class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black"
+                    class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black border border-gray-200"
                   >
                     <i class="fas fa-minus"></i>
                   </button>
@@ -204,19 +254,27 @@
               </div>
             </div>
             <!-- خواردنی حەوتەم -->
-            <div class="w-full border p-4 rounded shadow text-center">
-              <img class="img mx-auto mb-2" src="fast.jpg" alt="" />
-              <h2 class="font-bold mb-2">لەفەی پەتاتە</h2>
-              <div class="text-lg space-x-2">
+            <div
+              class="w-full bg-white rounded-lg shadow text-center food-card border border-gray-100 hover:shadow-lg hover:bg-yellow-50 transition-all duration-200 p-2 sm:p-4"
+            >
+              <img
+                class="mx-auto mb-2 rounded-md object-cover w-full h-16 sm:h-20 md:h-24"
+                src="fast.jpg"
+                alt=""
+              />
+              <h2 class="font-bold mb-2 text-base sm:text-lg">لەفەی پەتاتە</h2>
+              <div
+                class="text-base sm:text-lg flex flex-col items-center gap-1"
+              >
                 ٥٠٠ دینار
-                <div>
+                <div class="flex gap-2 justify-center">
                   <button
-                    class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black"
+                    class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black border border-gray-200"
                   >
                     <i class="fas fa-plus ml-1"></i>
                   </button>
                   <button
-                    class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black"
+                    class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black border border-gray-200"
                   >
                     <i class="fas fa-minus"></i>
                   </button>
@@ -224,19 +282,27 @@
               </div>
             </div>
             <!-- خواردنی هەشتەم -->
-            <div class="w-full border p-4 rounded shadow text-center">
-              <img class="img mx-auto mb-2" src="fast.jpg" alt="" />
-              <h2 class="font-bold mb-2">لەفەی کنتاکی</h2>
-              <div class="text-lg space-x-2">
+            <div
+              class="w-full bg-white rounded-lg shadow text-center food-card border border-gray-100 hover:shadow-lg hover:bg-yellow-50 transition-all duration-200 p-2 sm:p-4"
+            >
+              <img
+                class="mx-auto mb-2 rounded-md object-cover w-full h-16 sm:h-20 md:h-24"
+                src="fast.jpg"
+                alt=""
+              />
+              <h2 class="font-bold mb-2 text-base sm:text-lg">لەفەی کنتاکی</h2>
+              <div
+                class="text-base sm:text-lg flex flex-col items-center gap-1"
+              >
                 ٥٠٠ دینار
-                <div>
+                <div class="flex gap-2 justify-center">
                   <button
-                    class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black"
+                    class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black border border-gray-200"
                   >
                     <i class="fas fa-plus ml-1"></i>
                   </button>
                   <button
-                    class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black"
+                    class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black border border-gray-200"
                   >
                     <i class="fas fa-minus"></i>
                   </button>
@@ -244,19 +310,27 @@
               </div>
             </div>
             <!-- خواردنی نۆیەم -->
-            <div class="w-full border p-4 rounded shadow text-center">
-              <img class="img mx-auto mb-2" src="fast.jpg" alt="" />
-              <h2 class="font-bold mb-2">لەفەی بۆرەک</h2>
-              <div class="text-lg space-x-2">
+            <div
+              class="w-full bg-white rounded-lg shadow text-center food-card border border-gray-100 hover:shadow-lg hover:bg-yellow-50 transition-all duration-200 p-2 sm:p-4"
+            >
+              <img
+                class="mx-auto mb-2 rounded-md object-cover w-full h-16 sm:h-20 md:h-24"
+                src="fast.jpg"
+                alt=""
+              />
+              <h2 class="font-bold mb-2 text-base sm:text-lg">لەفەی بۆرەک</h2>
+              <div
+                class="text-base sm:text-lg flex flex-col items-center gap-1"
+              >
                 ٥٠٠ دینار
-                <div>
+                <div class="flex gap-2 justify-center">
                   <button
-                    class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black"
+                    class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black border border-gray-200"
                   >
                     <i class="fas fa-plus ml-1"></i>
                   </button>
                   <button
-                    class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black"
+                    class="add-item bg-white hover:bg-yellow-100 px-2 py-1 rounded text-xs text-black border border-gray-200"
                   >
                     <i class="fas fa-minus"></i>
                   </button>
@@ -268,9 +342,8 @@
           <!--حساباتی خواردنەکا-->
 
           <div
-            class="md:w-100 h-full md:max-h-full mt-4 p-4 bg-white rounded shadow"
+            class="summary-box md:w-100 h-full md:max-h-full p-4 bg-white rounded shadow"
           >
-          
             <h2 class="text-lg font-bold mb-2">حساباتی خواردنەکان</h2>
             <div>
               <h2 class="font-bold text-xl">
@@ -289,6 +362,7 @@
               </h3>
               <button
                 class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+                id="sell"
               >
                 فرۆشتن
               </button>
