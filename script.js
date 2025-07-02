@@ -1,4 +1,4 @@
-// bo bashi menu bchukka 
+// for menu button functionality
   document.getElementById('menu-btn').addEventListener('click', () => {
     const menu = document.getElementById('menu');
     menu.classList.toggle('hidden');
@@ -12,16 +12,22 @@ const countDisplay = document.getElementById('count');
 
 
 
+
+// ...existing code...
+
 addBtn.addEventListener('click', () => {
   count++;
   countDisplay.textContent = count;
 });
 
 subBtn.addEventListener('click', () => {
-  count--;
-  countDisplay.textContent = count;
+  if (count > 0) { // Prevent going below zero
+    count--;
+    countDisplay.textContent = count;
+  }
 });
 
+// ...existing code...
 // Food items and their prices
 const foods = [
   { name: 'فلاوفل', price: 500 },
@@ -81,6 +87,6 @@ if (Sell) {
     foodCounts = Array(foods.length).fill(0);
     updateCalculation();
     // Optionally, show a message or animation for successful sale
-    // alert('فرۆشتن بەسەرکەوتوویی تەواو بوو!');
+    // alert('Sale completed successfully!');
   });
 }
