@@ -5,23 +5,31 @@ import ReportsPage from './pages/ReportsPage'
 import { SalesProvider } from './context/SalesContext'
 import SettingsPage from './pages/SettingsPage'
 
+import { UIProvider } from './context/UIContext'
+import { ErrorBoundary } from 'react-error-boundary'
+import { ErrorFallback } from './components/ErrorComponents'
+
 function App() {
     return (
         <div className="App">
-            <SalesProvider>
-                <Routes>
-                    {/* Redirect root to /pos since it's the main app now */}
-                    <Route path="/" element={<Navigate to="/pos" replace />} />
+            <ErrorBoundary FallbackComponent={ErrorFallback} onReset={() => window.location.reload()}>
+                <UIProvider>
+                    <SalesProvider>
+                        <Routes>
+                            {/* Redirect root to /pos since it's the main app now */}
+                            <Route path="/" element={<Navigate to="/pos" replace />} />
 
-                    <Route path="/pos" element={<PosDashboard />} />
-                    <Route path="/dashboard" element={<DashboardPage />} />
-                    <Route path="/reports" element={<ReportsPage />} />
+                            <Route path="/pos" element={<PosDashboard />} />
+                            <Route path="/dashboard" element={<DashboardPage />} />
+                            <Route path="/reports" element={<ReportsPage />} />
 
-                    {/* Fallback for implementation completeness */}
-                    <Route path="/settings" element={<SettingsPage />} />
-                    <Route path="/demo" element={<Navigate to="/pos" replace />} />
-                </Routes>
-            </SalesProvider>
+                            {/* Fallback for implementation completeness */}
+                            <Route path="/settings" element={<SettingsPage />} />
+                            <Route path="/demo" element={<Navigate to="/pos" replace />} />
+                        </Routes>
+                    </SalesProvider>
+                </UIProvider>
+            </ErrorBoundary>
         </div>
     )
 }

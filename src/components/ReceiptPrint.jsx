@@ -3,7 +3,7 @@ import React from 'react';
 export default function ReceiptPrint({ cart, totalAmount, transactionId, date }) {
     if (!cart || !transactionId) return null;
 
-    const totalItems = Object.values(cart).reduce((a, b) => a + b, 0);
+    const totalItems = Array.isArray(cart) ? cart.reduce((a, b) => a + b.qty, 0) : 0;
 
     return (
         <div id="receipt-print" className="hidden print:block bg-white text-black p-4 font-mono text-[12px] max-w-[300px] mx-auto">
@@ -23,11 +23,11 @@ export default function ReceiptPrint({ cart, totalAmount, transactionId, date })
                 </div>
                 <div className="flex justify-between">
                     <span>بەروار:</span>
-                    <span>{new Date(date).toLocaleDateString('en-GB')}</span>
+                    <span>{date ? new Date(date).toLocaleDateString('en-GB') : ''}</span>
                 </div>
                 <div className="flex justify-between">
                     <span>کات:</span>
-                    <span>{new Date(date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</span>
+                    <span>{date ? new Date(date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : ''}</span>
                 </div>
             </div>
 
@@ -38,11 +38,11 @@ export default function ReceiptPrint({ cart, totalAmount, transactionId, date })
                     <span className="w-1/6 text-center">بڕ</span>
                     <span className="w-1/3 text-left">کۆی گشتی</span>
                 </div>
-                {Object.entries(cart).map(([name, item]) => (
-                    <div key={name} className="flex mb-1" dir="rtl">
+                {Array.isArray(cart) && cart.map((item, index) => (
+                    <div key={index} className="flex mb-1" dir="rtl">
                         <span className="w-1/2 text-right truncate pl-1">{item.name}</span>
                         <span className="w-1/6 text-center">x{item.qty}</span>
-                        <span className="w-1/3 text-left ltr" dir="ltr">{item.subtotal.toLocaleString()}</span>
+                        <span className="w-1/3 text-left ltr" dir="ltr">{(item.subtotal || 0).toLocaleString()}</span>
                     </div>
                 ))}
             </div>
@@ -51,7 +51,7 @@ export default function ReceiptPrint({ cart, totalAmount, transactionId, date })
             <div className="border-t-2 border-dashed border-black pt-2 mb-4">
                 <div className="flex justify-between font-bold text-[14px] mb-1">
                     <span>کۆی گشتی:</span>
-                    <span>{totalAmount.toLocaleString()} د.ع</span>
+                    <span>{(totalAmount || 0).toLocaleString()} د.ع</span>
                 </div>
                 <div className="flex justify-between text-[11px]">
                     <span>ژمارەی پارچە:</span>

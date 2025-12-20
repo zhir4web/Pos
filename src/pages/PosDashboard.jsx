@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import { useSales } from '../context/SalesContext';
+import { useUI } from '../context/UIContext';
+import { ProductSkeleton, ButtonLoader } from '../components/LoadingComponents';
+import { EmptyState } from '../components/ErrorComponents';
+import ReceiptPrint from '../components/ReceiptPrint';
 
 const categories = [
     { id: 'all', name: 'هەموو', icon: 'fa-utensils' },
@@ -15,6 +19,17 @@ export default function PosDashboard() {
     const [showModal, setShowModal] = useState(false);
     const [showAddProductModal, setShowAddProductModal] = useState(false);
     const [showCart, setShowCart] = useState(false); // Mobile cart toggle
+    const [isLoading, setIsLoading] = useState(true); // Product loading state
+    const [shouldPrint, setShouldPrint] = useState(() => {
+        const saved = localStorage.getItem('shouldPrint');
+        return saved !== null ? JSON.parse(saved) : true;
+    });
+
+    // Simulate initial loading
+    useEffect(() => {
+        const timer = setTimeout(() => setIsLoading(false), 1000);
+        return () => clearTimeout(timer);
+    }, []);
 
     // New Product Form State
     const [newProduct, setNewProduct] = useState({ name: '', price: '', category: 'sandwich', img: './fast.jpg' });
@@ -22,6 +37,7 @@ export default function PosDashboard() {
     const [lastTransaction, setLastTransaction] = useState(null); // For receipt printing
 
     const { addTransaction, products, addProduct, deleteProduct, updateProduct } = useSales();
+    const { addToast } = useUI();
 
     const getCount = (id) => cart[id] || 0;
 
@@ -54,11 +70,13 @@ export default function PosDashboard() {
                 category: newProduct.category,
                 img: newProduct.img
             });
+            addToast('بەرهەمەکە بە سەرکەوتوویی نوێکرایەوە', 'success');
         } else {
             addProduct({
                 ...newProduct,
                 price: Number(newProduct.price)
             });
+            addToast('بەرهەمەکە زیادکرا', 'success');
         }
 
         setShowAddProductModal(false);
@@ -88,6 +106,7 @@ export default function PosDashboard() {
             delete newCart[id];
             return newCart;
         });
+        addToast('بەرهەمەکە لە سەبەتە سڕایەوە', 'info');
     };
 
     const calculateTotal = () => {
@@ -98,19 +117,16 @@ export default function PosDashboard() {
     };
 
     const handleSell = () => {
-        setShowModal(true);
-    };
+        if (totalItems === 0) return;
 
-    const confirmSale = () => {
         // Create Transaction Object
-        const totalAmount = calculateTotal();
         const itemsDescription = Object.entries(cart).map(([id, count]) => {
             const food = products.find(f => f.id === parseInt(id));
             return `${count}x ${food.name}`;
         }).join(', ');
 
         const newTransaction = {
-            id: Date.now(), // Use timestamp as ID for uniqueness
+            id: Date.now(),
             date: new Date().toISOString().split('T')[0],
             time: new Date().toLocaleTimeString('ku-IQ', { hour: '2-digit', minute: '2-digit' }),
             items: itemsDescription,
@@ -121,15 +137,32 @@ export default function PosDashboard() {
 
         addTransaction(newTransaction);
 
-        // Save for printing
+        // Save for printing BEFORE clearing cart
+        const printCart = Object.entries(cart).map(([id, count]) => {
+            const food = products.find(f => f.id === parseInt(id));
+            return {
+                name: food?.name || 'Unknown',
+                qty: count,
+                subtotal: (food?.price || 0) * count
+            };
+        });
+
         setLastTransaction({
             ...newTransaction,
-            cart: { ...cart },
+            cart: printCart, // Detailed cart for printing
             date: new Date().toISOString()
         });
 
         setCart({});
-        setShowModal(true); // Changed to true to show success modal
+        setShowModal(true);
+        addToast('فرۆشتنەکە بە سەرکەوتوویی ئەنجامدرا', 'success');
+
+        // Auto print ONLY if enabled
+        if (shouldPrint) {
+            setTimeout(() => {
+                window.print();
+            }, 500);
+        }
     };
 
     const handlePrint = () => {
@@ -178,49 +211,80 @@ export default function PosDashboard() {
                         </button>
                     </div>
                     {/* Grid */}
-                    <div className="flex-1 overflow-y-auto pr-2 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 content-start pb-20 lg:pb-0">
-                        {filteredFoods.map((food) => (
-                            <div key={food.id} className="bg-white dark:bg-gray-800 p-3 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-all group flex flex-col h-full animate-fade-in">
-                                <div className="relative mb-3 overflow-hidden rounded-xl h-28 group-hover:shadow-md transition-shadow">
-                                    <img src={food.img} alt={food.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                                    {getCount(food.id) > 0 && (
-                                        <div className="absolute top-2 right-2 bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shadow-md">
-                                            {getCount(food.id)}
-                                        </div>
-                                    )}
-                                    {/* Delete Product Button */}
-                                    <div className="absolute top-2 left-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                openEditModal(food);
-                                            }}
-                                            className="bg-blue-500/80 hover:bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs"
-                                        >
-                                            <i className="fas fa-pen"></i>
-                                        </button>
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                if (window.confirm('دڵنیایت لە سڕینەوەی ئەم بەرهەمە؟')) {
-                                                    deleteProduct(food.id);
-                                                }
-                                            }}
-                                            className="bg-red-500/80 hover:bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs"
-                                        >
-                                            <i className="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <h3 className="font-bold text-gray-800 dark:text-white mb-1">{food.name}</h3>
-                                <div className="mt-auto flex justify-between items-end">
-                                    <span className="font-medium text-gray-500 dark:text-gray-400 text-sm">{food.price} د.ع</span>
-                                    <button onClick={() => handleAdd(food.id)} className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-blue-500 hover:text-white flex items-center justify-center transition-colors text-blue-600 dark:text-blue-400">
-                                        <i className="fas fa-plus text-xs"></i>
-                                    </button>
-                                </div>
+                    <div className="flex-1 overflow-y-auto pr-2 pb-20 lg:pb-0">
+                        {isLoading ? (
+                            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 content-start">
+                                {[...Array(8)].map((_, i) => (
+                                    <ProductSkeleton key={i} />
+                                ))}
                             </div>
-                        ))}
+                        ) : filteredFoods.length === 0 ? (
+                            <EmptyState
+                                icon="fa-search"
+                                title="هیچ بەرهەمێک نەدۆزرایەوە"
+                                message="هەوڵبدە لە هاوپۆلێکی تر بگەڕێیت یان بەرهەمی نوێ زیاد بکەیت."
+                                action={
+                                    <button
+                                        onClick={() => setActiveCategory('all')}
+                                        className="text-blue-600 hover:underline font-bold"
+                                    >
+                                        بینینی هەموو بەرهەمەکان
+                                    </button>
+                                }
+                            />
+                        ) : (
+                            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 content-start">
+                                {filteredFoods.map((food) => (
+                                    <div key={food.id} className="bg-white dark:bg-gray-800 p-3 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-all group flex flex-col h-full animate-fade-in hover:translate-y-[-2px]">
+                                        <div className="relative mb-3 overflow-hidden rounded-xl h-28 group-hover:shadow-md transition-shadow">
+                                            <img src={food.img} alt={food.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                                            {getCount(food.id) > 0 && (
+                                                <div className="absolute top-2 right-2 bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shadow-md animate-bounce">
+                                                    {getCount(food.id)}
+                                                </div>
+                                            )}
+                                            {/* Delete Product Button */}
+                                            <div className="absolute top-2 left-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        openEditModal(food);
+                                                    }}
+                                                    className="bg-blue-500/80 hover:bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs transition-colors"
+                                                >
+                                                    <i className="fas fa-pen"></i>
+                                                </button>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        if (window.confirm('دڵنیایت لە سڕینەوەی ئەم بەرهەمە؟')) {
+                                                            deleteProduct(food.id);
+                                                            addToast('بەرهەمەکە سڕایەوە', 'warning');
+                                                        }
+                                                    }}
+                                                    className="bg-red-500/80 hover:bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs transition-colors"
+                                                >
+                                                    <i className="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <h3 className="font-bold text-gray-800 dark:text-white mb-1">{food.name}</h3>
+                                        <div className="mt-auto flex justify-between items-end">
+                                            <span className="font-medium text-gray-500 dark:text-gray-400 text-sm">{food.price.toLocaleString()} د.ع</span>
+                                            <button
+                                                onClick={() => {
+                                                    handleAdd(food.id);
+                                                    addToast(`${food.name} زیادکرا`, 'info');
+                                                }}
+                                                className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-blue-500 hover:text-white flex items-center justify-center transition-all active:scale-90 text-blue-600 dark:text-blue-400"
+                                            >
+                                                <i className="fas fa-plus text-xs"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -291,6 +355,22 @@ export default function PosDashboard() {
                                 <span>کۆی گشتی</span>
                                 <span className="text-blue-600 dark:text-blue-400">{totalAmount.toLocaleString()} د.ع</span>
                             </div>
+                        </div>
+                        <div className="flex items-center justify-between mb-4 bg-white dark:bg-gray-800 p-3 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm">
+                            <div className="flex items-center gap-2">
+                                <i className={`fas fa-print ${shouldPrint ? 'text-blue-500' : 'text-gray-400'}`}></i>
+                                <span className="text-sm font-bold text-gray-700 dark:text-gray-200">چاپکردنی پسوڵە</span>
+                            </div>
+                            <button
+                                onClick={() => {
+                                    const newValue = !shouldPrint;
+                                    setShouldPrint(newValue);
+                                    localStorage.setItem('shouldPrint', JSON.stringify(newValue));
+                                }}
+                                className={`w-12 h-6 rounded-full transition-colors relative ${shouldPrint ? 'bg-blue-600' : 'bg-gray-300 dark:bg-gray-600'}`}
+                            >
+                                <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${shouldPrint ? 'right-1' : 'right-7'}`}></div>
+                            </button>
                         </div>
                         <button
                             onClick={handleSell}
