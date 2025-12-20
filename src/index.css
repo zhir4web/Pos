@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+@variant dark (&:where(.dark, .dark *));
+
+@theme {
+    --font-serif: "Noto Naskh Arabic", serif;
+}
+
+body {
+    font-family: var(--font-serif);
+}
