@@ -17,7 +17,7 @@ export default function PosDashboard() {
     const [showCart, setShowCart] = useState(false); // Mobile cart toggle
 
     // New Product Form State
-    const [newProduct, setNewProduct] = useState({ name: '', price: '', category: 'sandwich', img: '/fast.jpg' });
+    const [newProduct, setNewProduct] = useState({ name: '', price: '', category: 'sandwich', img: './fast.jpg' });
     const [editingProduct, setEditingProduct] = useState(null); // Track which product is being edited
 
     const { addTransaction, products, addProduct, deleteProduct, updateProduct } = useSales();
@@ -61,7 +61,7 @@ export default function PosDashboard() {
         }
 
         setShowAddProductModal(false);
-        setNewProduct({ name: '', price: '', category: 'sandwich', img: '/fast.jpg' });
+        setNewProduct({ name: '', price: '', category: 'sandwich', img: './fast.jpg' });
         setEditingProduct(null);
     };
 
