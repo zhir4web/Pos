@@ -9,3 +9,34 @@
 body {
     font-family: var(--font-serif);
 }
+
+@media print {
+
+    /* Hide everything by default */
+    body * {
+        visibility: hidden;
+    }
+
+    /* Only show the receipt */
+    #receipt-print,
+    #receipt-print * {
+        visibility: visible;
+    }
+
+    /* Position the receipt at the top left */
+    #receipt-print {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        display: block !important;
+    }
+
+    /* Hide standard page margins/headers/footers if possible */
+    @page {
+        size: auto;
+        margin: 0mm;
+    }
+}

@@ -19,6 +19,7 @@ export default function PosDashboard() {
     // New Product Form State
     const [newProduct, setNewProduct] = useState({ name: '', price: '', category: 'sandwich', img: './fast.jpg' });
     const [editingProduct, setEditingProduct] = useState(null); // Track which product is being edited
+    const [lastTransaction, setLastTransaction] = useState(null); // For receipt printing
 
     const { addTransaction, products, addProduct, deleteProduct, updateProduct } = useSales();
 
@@ -119,9 +120,21 @@ export default function PosDashboard() {
         };
 
         addTransaction(newTransaction);
+
+        // Save for printing
+        setLastTransaction({
+            ...newTransaction,
+            cart: { ...cart },
+            date: new Date().toISOString()
+        });
+
         setCart({});
-        setShowModal(false);
-    }
+        setShowModal(true); // Changed to true to show success modal
+    };
+
+    const handlePrint = () => {
+        window.print();
+    };
 
     const filteredFoods = activeCategory === 'all'
         ? products
@@ -299,15 +312,32 @@ export default function PosDashboard() {
                             <div className="w-20 h-20 bg-green-100 text-green-500 rounded-full flex items-center justify-center text-4xl mx-auto mb-6">
                                 <i className="fas fa-check"></i>
                             </div>
-                            <h2 className="text-2xl font-bold mb-2">داواکاری سەرکەوتوو بوو</h2>
-                            <p className="text-gray-500 mb-8">فرۆشتنەکە بە سەرکەوتوویی تۆمارکرا بە بڕی <br /><span className="font-bold text-gray-800">{totalAmount.toLocaleString()} د.ع</span></p>
-                            <button onClick={confirmSale} className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl transition-colors">
-                                باشە، داخستن
-                            </button>
+                            <h2 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white">داواکاری سەرکەوتوو بوو</h2>
+                            <p className="text-gray-500 dark:text-gray-400 mb-8">فرۆشتنەکە بە سەرکەوتوویی تۆمارکرا <br /><span className="font-bold text-gray-800 dark:text-gray-200">#{lastTransaction?.id}</span></p>
+
+                            <div className="flex flex-col gap-3">
+                                <button onClick={handlePrint} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2">
+                                    <i className="fas fa-print"></i>
+                                    چاپکردنی پسوڵە
+                                </button>
+                                <button onClick={() => setShowModal(false)} className="w-full bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-white font-bold py-3 rounded-xl transition-colors">
+                                    باشە، داخستن
+                                </button>
+                            </div>
                         </div>
                     </div>
                 )
             }
+
+            {/* Hidden Receipt Component */}
+            <ReceiptPrint
+                cart={lastTransaction?.cart}
+                totalAmount={lastTransaction?.total}
+                transactionId={lastTransaction?.id}
+                date={lastTransaction?.date}
+            />
+
+
             {/* Add Product Modal */}
             {
                 showAddProductModal && (
