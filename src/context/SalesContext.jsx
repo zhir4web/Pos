@@ -14,12 +14,17 @@ const initialProducts = [
     { id: 7, name: 'لەفەی پەتاتە', price: 500, category: 'sandwich', img: './fast.jpg' },
     { id: 8, name: 'لەفەی کنتاکی', price: 500, category: 'sandwich', img: './fast.jpg' },
     { id: 9, name: 'لەفەی بۆرەک', price: 500, category: 'sandwich', img: './fast.jpg' },
+    { id: 10, name: 'کۆکاکۆلا', price: 500, category: 'drinks', img: './fast.jpg' },
+    { id: 11, name: 'ئاوی میوە', price: 750, category: 'drinks', img: './fast.jpg' },
+    { id: 12, name: 'دۆ', price: 250, category: 'drinks', img: './fast.jpg' },
 ];
 
 export const SalesProvider = ({ children }) => {
-    // Start with empty transactions as requested
     const [transactions, setTransactions] = useState([]);
     const [products, setProducts] = useState(initialProducts);
+
+    // Generate Mock Data on Mount - REMOVED for production/real usage
+    // useEffect(() => { ... }, []);
 
     const addTransaction = (transaction) => {
         setTransactions(prev => [transaction, ...prev]);
@@ -40,9 +45,9 @@ export const SalesProvider = ({ children }) => {
     // Derived Statistics
     const totalSales = transactions.reduce((sum, tx) => sum + tx.total, 0);
     const totalOrders = transactions.length;
-    // Simple check for "today"
+    // Fix: Ensure we match ISO date string YYYY-MM-DD
     const todaySales = transactions
-        .filter(tx => tx.date === new Date().toISOString().split('T')[0])
+        .filter(tx => tx.date.split('T')[0] === new Date().toISOString().split('T')[0])
         .reduce((sum, tx) => sum + tx.total, 0);
 
     return (

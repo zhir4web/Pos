@@ -5,6 +5,7 @@ import { useUI } from '../context/UIContext';
 import { ProductSkeleton, ButtonLoader } from '../components/LoadingComponents';
 import { EmptyState } from '../components/ErrorComponents';
 import ReceiptPrint from '../components/ReceiptPrint';
+import AiInsightsSection from '../components/AiInsightsSection';
 
 const categories = [
     { id: 'all', name: 'هەموو', icon: 'fa-utensils' },
@@ -125,14 +126,25 @@ export default function PosDashboard() {
             return `${count}x ${food.name}`;
         }).join(', ');
 
+        const detailedCart = Object.entries(cart).map(([id, count]) => {
+            const food = products.find(f => f.id === parseInt(id));
+            return {
+                id: food.id,
+                name: food.name,
+                qty: count,
+                subtotal: food.price * count
+            };
+        });
+
         const newTransaction = {
             id: Date.now(),
-            date: new Date().toISOString().split('T')[0],
+            date: new Date().toISOString(), // Use ISO for analytics compatibility
             time: new Date().toLocaleTimeString('ku-IQ', { hour: '2-digit', minute: '2-digit' }),
             items: itemsDescription,
             total: totalAmount,
             method: 'کاش',
-            status: 'تەواو'
+            status: 'تەواو',
+            cart: detailedCart
         };
 
         addTransaction(newTransaction);
@@ -182,6 +194,10 @@ export default function PosDashboard() {
                 {/* Left Side: Product Grid */}
                 <div className="flex-1 flex flex-col min-h-0">
                     {/* Categories & Add Button */}
+                    <div className='mb-6'>
+                        <AiInsightsSection />
+                    </div>
+
                     <div className="flex justify-between items-center mb-6">
                         <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
                             {categories.map(cat => (
