@@ -5,7 +5,6 @@ import { useUI } from '../context/UIContext';
 import { ProductSkeleton, ButtonLoader } from '../components/LoadingComponents';
 import { EmptyState } from '../components/ErrorComponents';
 import ReceiptPrint from '../components/ReceiptPrint';
-import AiInsightsSection from '../components/AiInsightsSection';
 
 const categories = [
     { id: 'all', name: 'هەموو', icon: 'fa-utensils' },
@@ -195,9 +194,6 @@ export default function PosDashboard() {
                 {/* Left Side: Product Grid */}
                 <div className="flex-1 flex flex-col min-h-0">
                     {/* Categories & Add Button */}
-                    <div className='mb-6'>
-                        <AiInsightsSection />
-                    </div>
 
                     <div className="flex justify-between items-center mb-6">
                         <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">

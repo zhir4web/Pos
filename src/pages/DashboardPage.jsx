@@ -1,6 +1,7 @@
 import React from 'react';
 import Layout from '../components/Layout';
 import { useSales } from '../context/SalesContext';
+import AiInsightsSection from '../components/AiInsightsSection';
 
 export default function DashboardPage() {
     const { totalSales, totalOrders, transactions } = useSales();
@@ -35,6 +36,11 @@ export default function DashboardPage() {
                         </div>
                     </div>
                 ))}
+            </div>
+
+            {/* AI Analytics Section */}
+            <div className="mb-8">
+                <AiInsightsSection />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
