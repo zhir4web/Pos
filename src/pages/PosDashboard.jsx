@@ -170,7 +170,8 @@ export default function PosDashboard() {
         addToast('فرۆشتنەکە بە سەرکەوتوویی ئەنجامدرا', 'success');
 
         // Auto print ONLY if enabled
-        if (shouldPrint) {
+        if (shouldPrint && shouldPrint === true) {
+            console.log("Auto-printing receipt...");
             setTimeout(() => {
                 window.print();
             }, 500);
