@@ -244,13 +244,14 @@ export default function PosDashboard() {
                                                 </div>
                                             )}
                                             {/* Delete Product Button */}
-                                            <div className="absolute top-2 left-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <div className="absolute top-2 left-2 flex gap-2 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
                                                 <button
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         openEditModal(food);
                                                     }}
-                                                    className="bg-blue-500/80 hover:bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs transition-colors"
+                                                    className="bg-blue-500/90 hover:bg-blue-600 text-white w-9 h-9 rounded-full flex items-center justify-center text-sm shadow-lg transition-transform active:scale-95"
+                                                    title="دەستکاری"
                                                 >
                                                     <i className="fas fa-pen"></i>
                                                 </button>
@@ -262,7 +263,8 @@ export default function PosDashboard() {
                                                             addToast('بەرهەمەکە سڕایەوە', 'warning');
                                                         }
                                                     }}
-                                                    className="bg-red-500/80 hover:bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs transition-colors"
+                                                    className="bg-red-500/90 hover:bg-red-600 text-white w-9 h-9 rounded-full flex items-center justify-center text-sm shadow-lg transition-transform active:scale-95"
+                                                    title="سڕینەوە"
                                                 >
                                                     <i className="fas fa-trash"></i>
                                                 </button>
