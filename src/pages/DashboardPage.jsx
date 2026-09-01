@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Layout from '../components/Layout';
 import { usePos } from '../context/PosContext';
 import AiInsightsSection from '../components/AiInsightsSection';
@@ -19,7 +19,7 @@ export default function DashboardPage() {
     } = usePos();
 
     const [selectedTx, setSelectedTx] = useState(null);
-    const [chartPeriod, setChartPeriod] = useState('weekly'); // 'weekly' | 'hourly'
+    const [chartPeriod, setChartPeriod] = useState('weekly'); // 'weekly' | 'monthly'
 
     const recentOrders = transactions.slice(0, 6);
 
@@ -58,9 +58,28 @@ export default function DashboardPage() {
         },
     ];
 
-    // Weekly sales mock heights for smooth visualization
-    const days = ['شەممە', 'یەکشەممە', 'دووشەممە', 'سێشەممە', 'چوارشەممە', 'پێنجشەممە', 'هەینی'];
-    const barHeights = [45, 60, 55, 80, 75, 95, 88];
+    // Real weekly sales calculation from actual transactions
+    const weeklyData = useMemo(() => {
+        const dayNames = ['شەممە', 'یەکشەممە', 'دووشەممە', 'سێشەممە', 'چوارشەممە', 'پێنجشەممە', 'هەینی'];
+        const dayTotals = [0, 0, 0, 0, 0, 0, 0];
+
+        transactions.forEach(tx => {
+            if (tx.date) {
+                const date = new Date(tx.date);
+                const jsDay = date.getDay(); // 0 is Sunday, 6 is Saturday
+                // Kurdish week starts on Saturday (idx 0), Sunday (idx 1), etc.
+                const kurdishDayIdx = (jsDay + 1) % 7;
+                dayTotals[kurdishDayIdx] += (tx.total || 0);
+            }
+        });
+
+        const max = Math.max(...dayTotals, 1);
+        return dayNames.map((name, i) => ({
+            name,
+            total: dayTotals[i],
+            height: dayTotals[i] > 0 ? Math.max(15, Math.round((dayTotals[i] / max) * 100)) : 0
+        }));
+    }, [transactions]);
 
     return (
         <Layout 
@@ -117,8 +136,8 @@ export default function DashboardPage() {
                                     حەفتانە
                                 </button>
                                 <button
-                                    onClick={() => setChartPeriod('hourly')}
-                                    className={`px-3 py-1 rounded-lg transition-colors ${chartPeriod === 'hourly' ? 'bg-white dark:bg-slate-700 text-amber-500 shadow' : 'text-slate-500'}`}
+                                    onClick={() => setChartPeriod('monthly')}
+                                    className={`px-3 py-1 rounded-lg transition-colors ${chartPeriod === 'monthly' ? 'bg-white dark:bg-slate-700 text-amber-500 shadow' : 'text-slate-500'}`}
                                 >
                                     مانگانە
                                 </button>
@@ -126,32 +145,36 @@ export default function DashboardPage() {
                         </div>
 
                         {/* Bar Chart Visualization */}
-                        <div className="h-64 flex items-end justify-between gap-3 px-2 pt-6">
-                            {days.map((day, idx) => {
-                                const height = barHeights[idx];
-                                const isPeak = height === Math.max(...barHeights);
-                                return (
+                        {transactions.length === 0 ? (
+                            <div className="h-64 flex flex-col items-center justify-center text-center text-slate-400">
+                                <i className="fas fa-chart-line text-4xl mb-2 opacity-30"></i>
+                                <p className="font-bold text-xs">هیچ فرۆشتنێک تۆمار نەکراوە</p>
+                                <p className="text-[11px] text-slate-500 mt-0.5">لە کاتی فرۆشتنی داواکاری نوێ، چارتەکە ئۆتۆماتیکی پڕدەبێتەوە</p>
+                            </div>
+                        ) : (
+                            <div className="h-64 flex items-end justify-between gap-3 px-2 pt-6">
+                                {weeklyData.map((d, idx) => (
                                     <div key={idx} className="flex-1 flex flex-col items-center gap-2 group h-full justify-end">
                                         <span className="opacity-0 group-hover:opacity-100 transition-opacity text-[10px] font-mono font-bold text-amber-500 mb-1">
-                                            {height * 1500} {settings.currency}
+                                            {d.total.toLocaleString()} {settings.currency}
                                         </span>
                                         <div className="w-full bg-slate-100 dark:bg-slate-800/80 rounded-2xl h-full flex items-end p-1">
                                             <div
-                                                style={{ height: `${height}%` }}
+                                                style={{ height: `${d.height}%` }}
                                                 className={`w-full rounded-xl transition-all duration-700 ${
-                                                    isPeak 
+                                                    d.height > 0
                                                         ? 'bg-gradient-to-t from-amber-500 to-orange-500 shadow-lg shadow-orange-500/30' 
-                                                        : 'bg-gradient-to-t from-blue-500 to-indigo-500 group-hover:from-amber-400 group-hover:to-orange-500'
+                                                        : 'bg-transparent'
                                                 }`}
                                             ></div>
                                         </div>
                                         <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 truncate max-w-full text-center">
-                                            {day}
+                                            {d.name}
                                         </span>
                                     </div>
-                                );
-                            })}
-                        </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
                     {/* Recent Orders List (4 Cols) */}

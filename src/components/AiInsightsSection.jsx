@@ -28,7 +28,7 @@ export default function AiInsightsSection() {
     const { transactions, products, settings } = usePos();
 
     const insights = useMemo(() => {
-        // 1. Best Sellers
+        // 1. Best Sellers from REAL transactions only
         const counts = {};
         let totalSold = 0;
         transactions.forEach(tx => {
@@ -49,7 +49,7 @@ export default function AiInsightsSection() {
                 percentage: totalSold > 0 ? Math.round((count / totalSold) * 100) : 0
             }));
 
-        // 2. Meal Combo (Pairing analysis)
+        // 2. Meal Combo (Pairing analysis) from REAL transactions only
         const pairCounts = {};
         transactions.forEach(tx => {
             if (tx.cart && tx.cart.length > 1) {
@@ -63,36 +63,38 @@ export default function AiInsightsSection() {
             }
         });
 
-        const topPair = Object.entries(pairCounts).sort(([, a], [, b]) => b - a)[0];
+        const topPairEntry = Object.entries(pairCounts).sort(([, a], [, b]) => b - a)[0];
+        const topPair = topPairEntry ? { name: topPairEntry[0], count: topPairEntry[1] } : null;
 
-        // 3. Peak Ordering Times
-        const hourCounts = new Array(24).fill(0);
-        transactions.forEach(tx => {
-            const d = new Date(tx.date);
-            const hour = d.getHours();
-            if (!isNaN(hour)) {
-                hourCounts[hour] = (hourCounts[hour] || 0) + 1;
+        // 3. Peak Ordering Times from REAL transactions only
+        let peakTimeStr = null;
+        if (transactions.length > 0) {
+            const hourCounts = new Array(24).fill(0);
+            transactions.forEach(tx => {
+                const d = new Date(tx.date);
+                const hour = d.getHours();
+                if (!isNaN(hour)) {
+                    hourCounts[hour] = (hourCounts[hour] || 0) + 1;
+                }
+            });
+
+            let peakHour = 0;
+            let maxOrders = 0;
+            hourCounts.forEach((count, h) => {
+                if (count > maxOrders) {
+                    maxOrders = count;
+                    peakHour = h;
+                }
+            });
+
+            if (maxOrders > 0) {
+                peakTimeStr = `${peakHour > 12 ? peakHour - 12 : peakHour === 0 ? 12 : peakHour}:00 ${peakHour >= 12 ? 'ئێوارە' : 'بەیانی'}`;
             }
-        });
-
-        let peakHour = 20; // default 8 PM
-        let maxOrders = 0;
-        hourCounts.forEach((count, h) => {
-            if (count > maxOrders) {
-                maxOrders = count;
-                peakHour = h;
-            }
-        });
-
-        const peakTimeStr = `${peakHour > 12 ? peakHour - 12 : peakHour}:00 ${peakHour >= 12 ? 'ئێوارە' : 'بەیانی'}`;
+        }
 
         return {
-            topSellers: topSellers.length > 0 ? topSellers : [
-                { name: 'لەفەی مریشکی شاوەرما', count: 18, percentage: 42 },
-                { name: 'پیتزای پێپەرۆنی', count: 12, percentage: 28 },
-                { name: 'هەمبەرگری گۆشت', count: 9, percentage: 21 },
-            ],
-            topPair: topPair ? { name: topPair[0], count: topPair[1] } : { name: 'لەفەی مریشک + کۆکاکۆلا', count: 14 },
+            topSellers,
+            topPair,
             peakTimeStr,
             totalSold
         };
@@ -114,63 +116,83 @@ export default function AiInsightsSection() {
                             <h3 className="font-extrabold text-base text-white flex items-center gap-2">
                                 شیکاری و دەستنیشانکردنی ژیرانە (AI Insights)
                             </h3>
-                            <p className="text-xs text-slate-400">پوختەی زیرەکی دەستکرد بۆ تێگەیشتن لە ڕەفتاری کڕیار و بەرزکردنەوەی فرۆش</p>
+                            <p className="text-xs text-slate-400">پوختەی زیرەکی دەستکرد بەپێی داتای فرۆشی ڕاستەقینە</p>
                         </div>
                     </div>
                     <span className="self-start sm:self-auto px-3 py-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-xl text-xs font-black">
-                        شیکاری ڕاستەوخۆ
+                        {transactions.length > 0 ? `${transactions.length} وەسڵی تۆمارکراو` : 'داتای سفر (Clean)'}
                     </span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     {/* 1. Best Sellers */}
                     <InsightCard title="پڕفرۆشترینەکان" icon="fa-trophy" color="bg-gradient-to-tr from-amber-500 to-orange-600 text-white" badge="Top 3">
-                        {insights.topSellers.map((item, idx) => (
-                            <div key={idx} className="flex justify-between items-center py-1 border-b border-slate-100 dark:border-slate-800 last:border-0 text-xs">
-                                <div className="flex items-center gap-2 overflow-hidden">
-                                    <span className="w-5 h-5 rounded-full bg-slate-100 dark:bg-slate-800 text-amber-500 font-black text-[10px] flex items-center justify-center">
-                                        {idx + 1}
-                                    </span>
-                                    <span className="font-bold text-slate-800 dark:text-slate-200 truncate">{item.name}</span>
-                                </div>
-                                <div className="text-left font-mono font-bold text-amber-500 flex-shrink-0">
-                                    {item.count} دانە ({item.percentage}%)
-                                </div>
+                        {insights.topSellers.length === 0 ? (
+                            <div className="py-4 text-center text-slate-400 text-xs">
+                                <i className="fas fa-chart-simple text-2xl mb-1.5 opacity-30"></i>
+                                <p>هیچ فرۆشتنێک تۆمار نەکراوە</p>
                             </div>
-                        ))}
+                        ) : (
+                            insights.topSellers.map((item, idx) => (
+                                <div key={idx} className="flex justify-between items-center py-1 border-b border-slate-100 dark:border-slate-800 last:border-0 text-xs">
+                                    <div className="flex items-center gap-2 overflow-hidden">
+                                        <span className="w-5 h-5 rounded-full bg-slate-100 dark:bg-slate-800 text-amber-500 font-black text-[10px] flex items-center justify-center">
+                                            {idx + 1}
+                                        </span>
+                                        <span className="font-bold text-slate-800 dark:text-slate-200 truncate">{item.name}</span>
+                                    </div>
+                                    <div className="text-left font-mono font-bold text-amber-500 flex-shrink-0">
+                                        {item.count} دانە ({item.percentage}%)
+                                    </div>
+                                </div>
+                            ))
+                        )}
                     </InsightCard>
 
                     {/* 2. Top Combo Pairing */}
                     <InsightCard title="جوتە بەهێزەکان (Combos)" icon="fa-utensils" color="bg-gradient-to-tr from-purple-500 to-indigo-600 text-white" badge="پێکەوەیی">
-                        <div className="text-center py-2 space-y-1">
-                            <span className="text-2xl">🍔 🥤</span>
-                            <h4 className="font-black text-xs text-slate-900 dark:text-white line-clamp-2 px-1">
-                                {insights.topPair.name}
-                            </h4>
-                            <p className="text-[11px] font-bold text-purple-600 dark:text-purple-400 pt-1">
-                                {insights.topPair.count} جار پێکەوە داواکراون
-                            </p>
-                        </div>
+                        {insights.topPair ? (
+                            <div className="text-center py-2 space-y-1">
+                                <span className="text-2xl">🍔 🥤</span>
+                                <h4 className="font-black text-xs text-slate-900 dark:text-white line-clamp-2 px-1">
+                                    {insights.topPair.name}
+                                </h4>
+                                <p className="text-[11px] font-bold text-purple-600 dark:text-purple-400 pt-1">
+                                    {insights.topPair.count} جار پێکەوە داواکراون
+                                </p>
+                            </div>
+                        ) : (
+                            <div className="py-4 text-center text-slate-400 text-xs">
+                                <i className="fas fa-link text-2xl mb-1.5 opacity-30"></i>
+                                <p>چاوەڕوانی یەکەم فرۆشتنە</p>
+                            </div>
+                        )}
                     </InsightCard>
 
                     {/* 3. Peak Hour */}
                     <InsightCard title="کاتژمێری قەرەباڵغ" icon="fa-clock" color="bg-gradient-to-tr from-pink-500 to-rose-600 text-white" badge="قەرەباڵغترین">
-                        <div className="text-center py-2 space-y-1">
-                            <span className="text-3xl font-black text-rose-500 block font-sans">{insights.peakTimeStr}</span>
-                            <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                                زۆرترین داواکاری لەم کاتەدایە
-                            </p>
-                            <span className="inline-block px-2 py-0.5 bg-rose-500/10 text-rose-500 rounded text-[10px] font-bold">
-                                ئامادەباشی تەواو لە چێشتخانە
-                            </span>
-                        </div>
+                        {insights.peakTimeStr ? (
+                            <div className="text-center py-2 space-y-1">
+                                <span className="text-3xl font-black text-rose-500 block font-sans">{insights.peakTimeStr}</span>
+                                <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                                    زۆرترین داواکاری لەم کاتەدایە
+                                </p>
+                            </div>
+                        ) : (
+                            <div className="py-4 text-center text-slate-400 text-xs">
+                                <i className="fas fa-clock text-2xl mb-1.5 opacity-30"></i>
+                                <p>چاوەڕوانی تۆمارکردنی کاتە</p>
+                            </div>
+                        )}
                     </InsightCard>
 
                     {/* 4. Strategic Smart Suggestion */}
                     <InsightCard title="پێشنیاری ژیرانەی گەشە" icon="fa-lightbulb" color="bg-gradient-to-tr from-emerald-500 to-teal-600 text-white" badge="ستراتیژی">
                         <div className="text-xs text-slate-700 dark:text-slate-300 space-y-1.5 py-1">
                             <p className="leading-relaxed">
-                                💡 خستنەڕووی ئۆفەری لەفە + خواردنەوە بە کەمکردنەوەی ٥٠٠ دینار دەبێتە هۆی <strong>زیادبوونی ١٨٪</strong> لە فرۆشی گشتی.
+                                {transactions.length === 0 
+                                    ? '💡 سیستەم بە تەواوی ئامادەیە. خواردنەکانت زیاد بکە و دەست بە فرۆشتن بکە بۆ بینینی شیکارییەکان.' 
+                                    : '💡 خستنەڕووی ئۆفەری لەفە + خواردنەوە دەبێتە هۆی زیاتربوونی فرۆشی ڕۆژانە.'}
                             </p>
                         </div>
                     </InsightCard>
