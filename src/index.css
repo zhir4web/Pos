@@ -3,28 +3,65 @@
 @variant dark (&:where(.dark, .dark *));
 
 @theme {
-    --font-serif: "Noto Naskh Arabic", serif;
+    --font-serif: "Vazirmatn", "Noto Naskh Arabic", "Segoe UI", system-ui, -apple-system, sans-serif;
+    --font-sans: "Vazirmatn", "Noto Naskh Arabic", "Segoe UI", system-ui, -apple-system, sans-serif;
 }
 
 body {
-    font-family: var(--font-serif);
+    font-family: var(--font-sans);
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
-@media print {
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
 
-    /* Hide everything by default */
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(156, 163, 175, 0.4);
+    border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(156, 163, 175, 0.7);
+}
+
+/* Glassmorphism Styles */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.dark .glass-panel {
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Receipt Print Styling */
+@media print {
     body * {
         visibility: hidden;
     }
 
-    /* Only show the receipt */
     #receipt-print,
-    #receipt-print * {
+    #receipt-print *,
+    #kot-print,
+    #kot-print * {
         visibility: visible;
     }
 
-    /* Position the receipt at the top left */
-    #receipt-print {
+    #receipt-print,
+    #kot-print {
         position: absolute;
         left: 0;
         top: 0;
@@ -32,12 +69,13 @@ body {
         margin: 0;
         padding: 0;
         display: block !important;
+        background: white !important;
+        color: black !important;
     }
 
-    /* Hide standard page margins/headers/footers if possible */
     @page {
         size: auto;
-        margin: 0mm;
+        margin: 2mm;
     }
 }
 
@@ -47,7 +85,6 @@ body {
         transform: translateX(100%);
         opacity: 0;
     }
-
     to {
         transform: translateX(0);
         opacity: 1;
@@ -55,57 +92,53 @@ body {
 }
 
 .animate-slide-in {
-    animation: slide-in 0.3s ease-out forwards;
+    animation: slide-in 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes fade-in {
     from {
         opacity: 0;
+        transform: scale(0.98);
     }
-
     to {
         opacity: 1;
+        transform: scale(1);
     }
 }
 
 .animate-fade-in {
-    animation: fade-in 0.3s ease-out forwards;
+    animation: fade-in 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-@keyframes shake {
-
-    0%,
+@keyframes pop-in {
+    0% {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    70% {
+        transform: scale(1.02);
+    }
     100% {
-        transform: translateX(0);
-    }
-
-    25% {
-        transform: translateX(-5px);
-    }
-
-    75% {
-        transform: translateX(5px);
+        transform: scale(1);
+        opacity: 1;
     }
 }
 
-.animate-shake {
-    animation: shake 0.3s ease-in-out;
+.animate-pop-in {
+    animation: pop-in 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-@keyframes bounce-slow {
-
-    0%,
-    100% {
-        transform: translateY(0);
+@keyframes pulse-subtle {
+    0%, 100% {
+        opacity: 1;
     }
-
     50% {
-        transform: translateY(-10px);
+        opacity: 0.6;
     }
 }
 
-.animate-bounce-slow {
-    animation: bounce-slow 2s infinite ease-in-out;
+.animate-pulse-subtle {
+    animation: pulse-subtle 2s infinite ease-in-out;
 }
 
 /* Screen Reader Only Utility */
