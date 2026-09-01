@@ -5,6 +5,21 @@ const PosContext = createContext();
 
 export const usePos = () => useContext(PosContext);
 
+// Auto-purge any previous mock data on initial load
+if (typeof window !== 'undefined') {
+    const isCleaned = localStorage.getItem('pos_clean_v4_purged');
+    if (!isCleaned) {
+        // Clear all previous test & mock storage keys completely
+        for (let i = localStorage.length - 1; i >= 0; i--) {
+            const key = localStorage.key(i);
+            if (key && (key.startsWith('pos_') || key.startsWith('sales_'))) {
+                localStorage.removeItem(key);
+            }
+        }
+        localStorage.setItem('pos_clean_v4_purged', 'true');
+    }
+}
+
 // Initial Categories (Customizable)
 export const initialCategories = [
     { id: 'all', name: 'هەموو خواردنەکان', icon: 'Utensils', count: 0 },
@@ -52,49 +67,49 @@ export const initialSettings = {
 export const PosProvider = ({ children }) => {
     // Products State
     const [products, setProducts] = useState(() => {
-        const saved = localStorage.getItem('pos_products_v3');
-        return saved !== null ? JSON.parse(saved) : initialProducts;
+        const saved = localStorage.getItem('pos_products_v4');
+        return saved !== null ? JSON.parse(saved) : [];
     });
 
     // Inventory State
     const [inventory, setInventory] = useState(() => {
-        const saved = localStorage.getItem('pos_inventory_v3');
-        return saved !== null ? JSON.parse(saved) : initialInventory;
+        const saved = localStorage.getItem('pos_inventory_v4');
+        return saved !== null ? JSON.parse(saved) : [];
     });
 
     // Customers State
     const [customers, setCustomers] = useState(() => {
-        const saved = localStorage.getItem('pos_customers_v3');
-        return saved !== null ? JSON.parse(saved) : initialCustomers;
+        const saved = localStorage.getItem('pos_customers_v4');
+        return saved !== null ? JSON.parse(saved) : [];
     });
 
     // Expenses State
     const [expenses, setExpenses] = useState(() => {
-        const saved = localStorage.getItem('pos_expenses_v3');
-        return saved !== null ? JSON.parse(saved) : initialExpenses;
+        const saved = localStorage.getItem('pos_expenses_v4');
+        return saved !== null ? JSON.parse(saved) : [];
     });
 
     // Tables State
     const [tables, setTables] = useState(() => {
-        const saved = localStorage.getItem('pos_tables_v3');
+        const saved = localStorage.getItem('pos_tables_v4');
         return saved !== null ? JSON.parse(saved) : initialTables;
     });
 
     // Transactions / Orders History
     const [transactions, setTransactions] = useState(() => {
-        const saved = localStorage.getItem('pos_transactions_v3');
+        const saved = localStorage.getItem('pos_transactions_v4');
         return saved !== null ? JSON.parse(saved) : [];
     });
 
     // Held Orders
     const [heldOrders, setHeldOrders] = useState(() => {
-        const saved = localStorage.getItem('pos_held_orders_v3');
+        const saved = localStorage.getItem('pos_held_orders_v4');
         return saved !== null ? JSON.parse(saved) : [];
     });
 
     // Shift Register State
     const [currentShift, setCurrentShift] = useState(() => {
-        const saved = localStorage.getItem('pos_current_shift_v3');
+        const saved = localStorage.getItem('pos_current_shift_v4');
         return saved !== null ? JSON.parse(saved) : {
             isOpen: true,
             openedAt: new Date().toISOString(),
@@ -105,45 +120,45 @@ export const PosProvider = ({ children }) => {
 
     // Settings State
     const [settings, setSettings] = useState(() => {
-        const saved = localStorage.getItem('pos_settings_v3');
+        const saved = localStorage.getItem('pos_settings_v4');
         return saved !== null ? JSON.parse(saved) : initialSettings;
     });
 
     // Save to LocalStorage whenever states update
     useEffect(() => {
-        localStorage.setItem('pos_products_v3', JSON.stringify(products));
+        localStorage.setItem('pos_products_v4', JSON.stringify(products));
     }, [products]);
 
     useEffect(() => {
-        localStorage.setItem('pos_inventory_v3', JSON.stringify(inventory));
+        localStorage.setItem('pos_inventory_v4', JSON.stringify(inventory));
     }, [inventory]);
 
     useEffect(() => {
-        localStorage.setItem('pos_customers_v3', JSON.stringify(customers));
+        localStorage.setItem('pos_customers_v4', JSON.stringify(customers));
     }, [customers]);
 
     useEffect(() => {
-        localStorage.setItem('pos_expenses_v3', JSON.stringify(expenses));
+        localStorage.setItem('pos_expenses_v4', JSON.stringify(expenses));
     }, [expenses]);
 
     useEffect(() => {
-        localStorage.setItem('pos_tables_v3', JSON.stringify(tables));
+        localStorage.setItem('pos_tables_v4', JSON.stringify(tables));
     }, [tables]);
 
     useEffect(() => {
-        localStorage.setItem('pos_transactions_v3', JSON.stringify(transactions));
+        localStorage.setItem('pos_transactions_v4', JSON.stringify(transactions));
     }, [transactions]);
 
     useEffect(() => {
-        localStorage.setItem('pos_held_orders_v3', JSON.stringify(heldOrders));
+        localStorage.setItem('pos_held_orders_v4', JSON.stringify(heldOrders));
     }, [heldOrders]);
 
     useEffect(() => {
-        localStorage.setItem('pos_current_shift_v3', JSON.stringify(currentShift));
+        localStorage.setItem('pos_current_shift_v4', JSON.stringify(currentShift));
     }, [currentShift]);
 
     useEffect(() => {
-        localStorage.setItem('pos_settings_v3', JSON.stringify(settings));
+        localStorage.setItem('pos_settings_v4', JSON.stringify(settings));
         sound.enabled = settings.soundEnabled;
         if (settings.theme === 'dark') {
             document.documentElement.classList.add('dark');
@@ -285,7 +300,7 @@ export const PosProvider = ({ children }) => {
         sound.success();
     };
 
-    // Clear all data to zero state
+    // Hard Clear / Purge all data to clean zero state
     const resetToFactoryData = () => {
         setProducts([]);
         setInventory([]);
@@ -302,27 +317,9 @@ export const PosProvider = ({ children }) => {
         });
         setSettings(initialSettings);
         
-        // Remove from storage
-        localStorage.removeItem('pos_products_v3');
-        localStorage.removeItem('pos_inventory_v3');
-        localStorage.removeItem('pos_customers_v3');
-        localStorage.removeItem('pos_expenses_v3');
-        localStorage.removeItem('pos_tables_v3');
-        localStorage.removeItem('pos_transactions_v3');
-        localStorage.removeItem('pos_held_orders_v3');
-        localStorage.removeItem('pos_current_shift_v3');
-        localStorage.removeItem('pos_settings_v3');
-        
-        // Also remove older storage versions
-        localStorage.removeItem('pos_products_v2');
-        localStorage.removeItem('pos_inventory_v2');
-        localStorage.removeItem('pos_customers_v2');
-        localStorage.removeItem('pos_expenses_v2');
-        localStorage.removeItem('pos_tables_v2');
-        localStorage.removeItem('pos_transactions_v2');
-        localStorage.removeItem('pos_held_orders_v2');
-        localStorage.removeItem('pos_current_shift_v2');
-        localStorage.removeItem('pos_settings_v2');
+        // Clear all localStorage keys completely
+        localStorage.clear();
+        localStorage.setItem('pos_clean_v4_purged', 'true');
         
         sound.success();
     };

@@ -238,20 +238,21 @@ export default function SettingsPage() {
                     </div>
                 </div>
 
-                {/* 4. Reset to Factory Demo */}
+                {/* 4. Reset & Clear All Data */}
                 <div className="bg-rose-500/10 border border-rose-500/30 p-6 rounded-3xl space-y-3">
                     <div className="flex items-center justify-between">
                         <div>
-                            <h4 className="font-black text-rose-600 dark:text-rose-400 text-sm">گەڕاندنەوە بۆ دۆخی سەرەتا (Reset)</h4>
+                            <h4 className="font-black text-rose-600 dark:text-rose-400 text-sm">سڕینەوە و سفرکردنەوەی هەموو داتاکان (Clear All Data)</h4>
                             <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
-                                گەڕاندنەوەی هەموو خواردنەکان و کۆگا بۆ داتای نموونەیی سەرەتا.
+                                سڕینەوەی هەموو خواردنەکان، کۆگا، قەرزەکان، فرۆش و مەسرەفەکان بۆ دەستپێکردن لە سفرەوە.
                             </p>
                         </div>
                         <button
                             onClick={() => setShowResetConfirm(true)}
-                            className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-md transition-colors"
+                            className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-md transition-colors flex items-center gap-1.5"
                         >
-                            گەڕاندنەوەی سەرەتا
+                            <i className="fas fa-trash-can"></i>
+                            <span>سڕینەوەی هەموو داتاکان</span>
                         </button>
                     </div>
                 </div>
@@ -265,9 +266,9 @@ export default function SettingsPage() {
                         <div className="w-14 h-14 rounded-full bg-rose-500/20 text-rose-500 flex items-center justify-center text-2xl mx-auto">
                             <i className="fas fa-triangle-exclamation"></i>
                         </div>
-                        <h3 className="font-black text-base text-slate-900 dark:text-white">دڵنیایت لە گەڕاندنەوە؟</h3>
+                        <h3 className="font-black text-base text-slate-900 dark:text-white">دڵنیایت لە سڕینەوەی هەموو داتاکان؟</h3>
                         <p className="text-xs text-slate-500 leading-relaxed">
-                            ئەم کردارە هەموو داتاکانی فرۆش و کۆگا دەگەڕێنێتەوە بۆ داتای سەرەتایی نموونە.
+                            ئەم کردارە هەموو مینوو، کۆگا، کڕیاران و فرۆشەکان دەسڕێتەوە و دەیکاتەوە بە سفر.
                         </p>
                         <div className="flex gap-2 pt-2">
                             <button
@@ -280,11 +281,11 @@ export default function SettingsPage() {
                                 onClick={() => {
                                     resetToFactoryData();
                                     setShowResetConfirm(false);
-                                    addToast('داتاکان گەڕێندرانەوە بۆ سەرەتا', 'info');
+                                    window.location.reload();
                                 }}
-                                className="flex-1 py-2.5 bg-rose-600 text-white rounded-xl font-bold text-xs shadow"
+                                className="flex-1 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow"
                             >
-                                بەڵێ، بگەڕێنەوە
+                                بەڵێ، هەمووی بسڕەوە
                             </button>
                         </div>
                     </div>
