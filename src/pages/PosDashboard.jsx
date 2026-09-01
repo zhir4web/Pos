@@ -482,11 +482,30 @@ export default function PosDashboard() {
 
                     {/* Products Grid */}
                     <div className="flex-1 overflow-y-auto pr-0.5">
-                        {filteredProducts.length === 0 ? (
+                        {products.length === 0 ? (
+                            <div className="h-80 flex flex-col items-center justify-center text-center p-8 bg-white dark:bg-slate-900 rounded-3xl border border-dashed border-slate-300 dark:border-slate-800 animate-fade-in">
+                                <div className="w-16 h-16 rounded-full bg-amber-500/20 text-amber-500 flex items-center justify-center text-2xl mb-3">
+                                    <i className="fas fa-utensils"></i>
+                                </div>
+                                <h3 className="font-extrabold text-base text-slate-900 dark:text-white mb-1">سیستەم ئامادەیە بۆ تۆمارکردنی خواردنەکان</h3>
+                                <p className="text-xs text-slate-400 max-w-xs mb-4">هێشتا هیچ خواردنێک لە مینوو تۆمار نەکراوە. کلیک بکە بۆ زیادکردنی خواردنی چێشتخانەکەت.</p>
+                                <button
+                                    onClick={() => {
+                                        setEditingProduct(null);
+                                        setProductForm({ name: '', price: '', cost: '', category: 'sandwiches', emoji: '🍔', stock: 50 });
+                                        setShowAddProductModal(true);
+                                    }}
+                                    className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-extrabold text-xs shadow-lg shadow-orange-600/30 flex items-center gap-2 transition-all"
+                                >
+                                    <i className="fas fa-plus"></i>
+                                    <span>زیادکردنی یەکەم خواردن</span>
+                                </button>
+                            </div>
+                        ) : filteredProducts.length === 0 ? (
                             <div className="h-64 flex flex-col items-center justify-center text-center text-slate-400">
-                                <i className="fas fa-utensils text-4xl mb-3 opacity-30"></i>
-                                <p className="font-bold text-sm">هیچ خواردنێک نەدۆزرایەوە</p>
-                                <p className="text-xs text-slate-500 mt-1">تکایە وشەی گەڕانەکەت بگۆڕە یان خواردنی نوێ زیاد بکە</p>
+                                <i className="fas fa-search text-3xl mb-2 opacity-30"></i>
+                                <p className="font-bold text-sm">هیچ خواردنێک بەم ناوە نەدۆزرایەوە</p>
+                                <p className="text-xs text-slate-500 mt-1">تکایە پیتەکان بگۆڕە یان فلتەری پۆلەکان لابەرە</p>
                             </div>
                         ) : (
                             <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3">
