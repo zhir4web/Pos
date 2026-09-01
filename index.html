@@ -14,11 +14,22 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Compiled Production CSS -->
+  <link rel="stylesheet" crossorigin href="./assets/index.css">
 </head>
 
 <body class="bg-slate-950 text-slate-100 antialiased selection:bg-amber-500 selection:text-black">
   <div id="root"></div>
-  <script type="module" src="/src/main.jsx"></script>
+
+  <!-- Smart Hybrid Loader: loads Vite JSX in local dev, or compiled bundle on GitHub Pages -->
+  <script type="module">
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      import('/src/main.jsx').catch(() => import('./assets/app.js'));
+    } else {
+      import('./assets/app.js');
+    }
+  </script>
 </body>
 
 </html>
